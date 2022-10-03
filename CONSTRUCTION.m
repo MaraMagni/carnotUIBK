@@ -143,7 +143,7 @@ classdef CONSTRUCTION
                         sheet = 'U-Values';
                     end
                     range = 'L11:U425';
-                    [~, ~, data]  = xlsread(filename, sheet, range);
+                    [~, ~, data] = xlsread(filename, sheet, range);
                     interval = 21;
                     index_raw_name = 1;
                     index_column_name = 1:2;
@@ -169,41 +169,6 @@ classdef CONSTRUCTION
                             break
                         end
                     end
-                    
-                case '10.2'
-                    if language
-                        sheet = 'U-Werte';
-                    else
-                        sheet = 'U-Values';
-                    end
-                    range = 'L8:T425';
-                    [~, ~, data] = xlsread(filename, sheet, range);
-                    interval = 21;
-                    index_raw_name = 1;
-                    index_column_name = [8,1];
-                    index_raw_namelay = 6:13;
-                    index_column_namelay = 1;
-                    index_raw_lambdalay = 6:13;
-                    index_column_lambdalay = 2;
-                    index_raw_d = 6:13;
-                    index_column_d = 7 + extra_column;
-                    if strcmp(model_cons_wall,'RC')
-                        index_column_rholay = 3;
-                        index_column_clay = 4;
-                    end
-                    index_raw_Rsi = 17;
-                    index_column_Rsi = 2;
-                    index_raw_Rse = 18;
-                    index_column_Rse = 2;
-                    check_NaN = [];
-                    check_NaN = (cellfun(@(V) any(isnan(V)),data));
-                    for ii = index_raw_name(1):interval:size(data,1)
-                        if check_NaN(ii,index_column_name(2))
-                            last_str = ii;
-                            break
-                        end
-                    end
-                    
                     data(last_str:end,:) = [];
             end
             
@@ -242,9 +207,7 @@ classdef CONSTRUCTION
                         names{ll} = data{index_raw_namelay(1)+ll-1+ii-1,index_column_namelay};
                     end
                 end
-                
-                
-                if  sum(d_layer) 
+                if d_layer
                     R_si = 0.0;
                     R_se = 0.0;
                     T_dactive = -1;
@@ -296,6 +259,7 @@ classdef CONSTRUCTION
                         parameter.Rse = 0.0;
                         %  parameter.N_layer = xmesh_beu; %not needed
                         parameter.xmesh_beu = xmesh_beu;
+                        parameter.d = xmesh_beu;
                         parameter.lambda = lambda;
                         parameter.rho = rho;
                         parameter.cp = cp;
@@ -369,50 +333,6 @@ classdef CONSTRUCTION
                         obj = obj.add_structure(savename, parameter, emission_1, emission_2, 0);
                     end
                     
-                     case '10.2'
-                    if language
-                        sheet = 'Flächen';
-                    else
-                        sheet = 'Areas';
-                    end
-                    range = 'L40:AC40';
-                    [~, ~, data_door] = xlsread(filename, sheet, range);
-                    if data_door{3} == 0 || isnan(data_door{3})
-                        warning('no door')
-                    else
-                        savename = data_door{1};
-                        model = 0;
-                        type = 0;
-                        U = 1/(1/data_door{end}-0.13-0.04);
-                        d = 0.10;
-                        layers_names = {'Wood'};
-                        layers_colors = [1 1 1] * ((1-0.3)*rand(1)+0.3);
-                        parameter.model = model;
-                        parameter.type = type;
-                        parameter.U = U;
-                        parameter.d = d;
-                        parameter.N_layer = d;
-                        parameter.xmesh_beu = d;
-                        parameter.lambda = 0.13;
-                        parameter.rho = 650;
-                        parameter.cp = 1700;
-                        parameter.tau = parameter.rho*parameter.cp/2;
-                        parameter.layers_names = layers_names;
-                        parameter.layers_colors = layers_colors;
-                        parameter.layers_lambda = 0.13;
-                        parameter.layers_rho = 650;
-                        parameter.layers_cp = 1700;
-                        parameter.layers_N_layer = 1;
-                        parameter.T_ini_beuken = 20;
-                        parameter.d_active = -1;
-                        parameter.T_dactive = -1;
-                        parameter.Phi_dactive = -1;
-                        emission_1 = 0.94;
-                        emission_2 = 0.94;
-                        
-                        obj = obj.add_structure(savename, parameter, emission_1, emission_2, 0);
-                    end
-                    
             end
             clearvars parameter
             
@@ -441,21 +361,6 @@ classdef CONSTRUCTION
                     index_column_tbname = 2;
                     index_column_tbbo = 1;
                     index_column_lpsi = 39;
-                    
-                case '10.2'
-                    if language
-                        sheet = 'Flächen';
-                    else
-                        sheet = 'Areas';
-                    end
-                    
-                    range = 'K8:AZ29';
-                    [~, ~, data3] = xlsread(filename, sheet, range);
-                    index_raw_tb = 16:18;
-                    index_column_tbarea = 2;
-                    index_column_tbname = 3;
-                    index_column_tbbo = 1;
-                    index_column_lpsi = 37;
             end
             
             if ~data3{index_raw_tb(1),index_column_tbarea} == 0
@@ -511,6 +416,7 @@ classdef CONSTRUCTION
                 
 %                 parameter.N_layer = d;
                 parameter.xmesh_beu = d;
+                parameter.d = d;
                 parameter.lambda = U;
                 parameter.rho = 50;
                 parameter.cp = 1000;
@@ -547,6 +453,7 @@ classdef CONSTRUCTION
                 emission_2 = 0.94;              
 %                 parameter.N_layer = d;
                 parameter.xmesh_beu = d;
+                parameter.d = d;
                 parameter.lambda = U;
                 parameter.rho = 50;
                 parameter.cp = 1000;
@@ -579,74 +486,7 @@ classdef CONSTRUCTION
             filename = name_xls_PHPP;
             
             switch version
-                case '10.2'
-                    if language
-                        sheet = 'Fenster';
-                    else
-                        sheet = 'Windows';
-                    end
-                    range = 'L23:BQ585';
-                    [~, ~, data1] = xlsread(filename, sheet, range);
-                    index_name_wi = 3;
-                    index_constr1_wi = 10; % constr Glass
-                    index_constr2_wi = 11; % constr Frame
-                    index_Ug = 35;
-                    index_Uf = 33;
-                    index_psige = 36;
-                    index_gw = 34;
-                    for ii = 1:size(data1,1)
-                        if strcmp(data1(ii,index_name_wi),'-') || sum(isnan(data1{ii,index_name_wi})) || isempty(data1{ii,index_name_wi})
-                            last_win = ii;
-                            break
-                        end
-                    end
-                    data1(last_win:end,:) = [];
-                    count_name = [];
-                    for ii = 1:size(data1,1)
-                        check =[];
-                        check = strcmp([data1{ii,index_constr1_wi} ' ' data1{ii,index_constr2_wi}],(count_name));
-                        if sum(check) == 0
-                            savename = [data1{ii,index_constr1_wi}(1:end) '_' data1{ii,index_constr2_wi}(1:end)];
-                            type = 1;
-							
-                            U_g = data1{ii,index_Ug};
-                            U_f = data1{ii,index_Uf};
-                            psi_ge = data1{ii,index_psige};
-
-                            g_w =  data1{ii,index_gw};
-                            tau_g_w = g_w;
-							
-                            n_pane = 3;                                 % number of panels
-
-                            d_w = [0.004 0.004 0.004];                  % / [m]
-                            c_w = [.21 .21 .21]*3600;                   % / [J/(kg K)] capacity
-                            rho_w = [2500 2500 2500];                   % / [kg/m^3]
-                            lambda_w = [0.76 0.76 0.76];                % / [W/(m.K)]
-    
-                            model = 0;
-                            
-                            parameter.model = model;
-                            parameter.type = type;
-                            parameter.U_g = U_g;
-                            parameter.U_f = U_f;
-                            parameter.psi_ge = psi_ge;
-                            parameter.g_w = g_w;
-                            parameter.tau_g_w = tau_g_w;
-                            parameter.n_pane = n_pane;
-                            parameter.d_w = d_w;
-                            parameter.c_w = c_w;
-                            parameter.rho_w = rho_w;
-                            parameter.lambda_w = lambda_w;
-                            emission_1 = 0.94;
-                            emission_2 = 0.60;
-                            absorption_2 = 0.65;
-    
-                            count_name{ii,1} = [data1{ii,index_constr1_wi} ' ' data1{ii,index_constr2_wi}];
-                            obj = obj.add_structure(savename, parameter, emission_1, emission_2, absorption_2);
-                        end
-                    end
-                    
-                    case '9.1'
+                case '9.1'
                     if language
                         sheet = 'Fenster';
                     else
@@ -758,7 +598,7 @@ classdef CONSTRUCTION
                             raw_d_active=raw_walls{ii+12,2};
                             raw_T_active=raw_walls{ii+13,2};
                             raw_Phi_active=raw_walls{ii+14,2};
-
+                            
                             if ~isnan(raw_walls{ii+1+jj,2})
                                 hygro = 1;
                                 parameter.model = 2;
@@ -1176,6 +1016,7 @@ classdef CONSTRUCTION
             T_active, parameter.R_si,...
             parameter.R_se, 0);
             
+            parameter.d = parameter.xmesh_beu;
             parameter.d_active = -1;
         end
        
