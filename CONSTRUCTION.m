@@ -203,6 +203,14 @@ classdef CONSTRUCTION
                         else
                             N_layer(ll) = 1;
                         end
+                        
+                        pos=find(d_layer>0);
+                        d_layer = d_layer(pos);
+                        c_layer = c_layer(pos);
+                        rho_layer = rho_layer(pos);
+                        N_layer = N_layer(pos);
+                        lambda_layer = lambda_layer(pos);
+                        
                         colors(ll,:) = [0.85 0.85 0.85] * ((1-0.3)*rand(1)+0.3);
                         names{ll} = data{index_raw_namelay(1)+ll-1+ii-1,index_column_namelay};
                     end
