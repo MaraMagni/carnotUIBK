@@ -299,11 +299,11 @@ classdef HVAC
 
 
             if strcmp(choice_heatload, 'limited')
-                parameter.heatload = data2(1,1);
-                parameter.coolload = data4(1,1);
+                parameter.heatload = HL;
+                parameter.coolload = CL;
             elseif strcmp(choice_heatload, 'unlimited')
-                parameter.heatload = 2*data2(1,1);
-                parameter.coolload = 2*data4(1,1);
+                parameter.heatload = 2*HL;
+                parameter.coolload = 2*CL;
             end
 
             if isnan(parameter.mechcool)
