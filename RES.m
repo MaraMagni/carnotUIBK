@@ -132,20 +132,25 @@ classdef RES
             if nargin == 0
             else
                 
-                AA=strfind(path, ';');
+                AA=strsplit(path,';')';
                 try % to be fixed (this is needed to save the libraries version
-                BB=strfind(path, 'Carnot');
-                EE=strfind(path, 'carnotUIBK');
+                BB=find(contains({AA{:}}, 'Carnot','IgnoreCase',true));
+                EE=find(contains({AA{:}}, 'carnotUIBK','IgnoreCase',true));
+                end
+                if not(exist('BB'))
+                    Carnot_ver = {'please define here the used version of the Carnot Library'};
+                else
+                    Carnot_ver = AA(BB(1))
                 end
 
-                CC=sort(AA-BB(1));
-                DD=CC(1:2)+BB(1);
-                PP=path;
-                FF=sort(AA-EE(1));
-                GG=FF(1:2)+EE(1);
+                if not(exist('EE'))
+                    CarnotUIBK_ver = {'please define here the used version of the CarnotUIBK Library'};
+                else
+                    CarnotUIBK_ver = AA(EE(1));
+                end
                 
-                obj.versions = ['Matlab: ' version '; Carnot: ' PP(DD(1)+1:DD(2)) ' CarnotUIBK: ' PP(GG(1)+1:GG(2))];
-                clear AA BB CC DD PP EE FF DD GG;
+                obj.versions = ['Matlab: ' version '; Carnot: ' char(Carnot_ver) ' CarnotUIBK: ' char(CarnotUIBK_ver)];
+                clear AA BB EE Carnot_ver CarnotUIBK_ver;
                 obj.number = number;
                 obj.building_saved = building_saved;
                 obj.results_AIB = results_AIB;
