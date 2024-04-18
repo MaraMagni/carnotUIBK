@@ -1610,11 +1610,13 @@ classdef GEOMETRY
                         end
                         
                         
-                        ispos=find(not(sum(isspace(char(data1{:,2}))')));
-                        nopos=find(sum(isspace(char(data1{:,2}))'));
+                        % ispos=find(not(sum(isspace(char(data1{:,2}))')));
+                        % nopos=find(sum(isspace(char(data1{:,2}))'));
+                        ispos=find(not(isnan([data1{:,2}])'));
+                        nopos=find(isnan([data1{:,2}])');
                         
                         if not(isempty(ispos))
-                           data1(ispos,3)=cellstr([char(data1{ispos,2})  char(ones(length(data1(ispos,2)),1) * ' ') char(data1{ispos,3})]);
+                           data1(ispos,3)=cellstr([char(string(data1(ispos,2)))  char(ones(length(data1(ispos,2)),1) * ' ') char(data1{ispos,3})]);
                         end
                         if not(isempty(nopos))
                            data1(nopos,3)=cellstr([char(ones(length(data1(nopos,2)),1) * ' ') char(data1{nopos,3})]);

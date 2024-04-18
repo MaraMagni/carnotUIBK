@@ -1356,7 +1356,7 @@ classdef GEOMETRY
                 switch version
                     case '9.1'
                         if language
-                            sheet = 'Flächen';
+                            sheet = 'FlÃ¤chen';
                         else
                             sheet = 'Areas';
                         end
@@ -1365,11 +1365,14 @@ classdef GEOMETRY
                         range = 'K40:AL1000'; %EV, before: 'K40:AL240';
                         [~, ~, data] = xlsread1(filename, sheet, range);
                         if language
-                            sheet = 'Flächen';
-                            idx_fl=find(strcmp(data(:,1),{'Wärmebrückeneingabe'}))-3;
+                            sheet = 'FlÃ¤chen';
+                            idx_fl=find(strcmp(data(:,1),{'WÃ¤rmebrÃ¼ckeneingabe'}))-3;
                         else
                             sheet = 'Areas';
-                            idx_fl=find(strcmp(data(:,1),{'Thermal bridge inputs'}))-3;
+                            idx_fl=find(strcmp(data(:,1),{'Thermal bridge input'}))-3;
+                            if isempty(idx_fl)
+                                idx_fl=find(strcmp(data(:,1),{'Thermal bridge inputs'}))-3;
+                            end
                         end
                         %reshape the data matrix to avoid to include the
                         %thermal bridges part
@@ -1410,7 +1413,7 @@ classdef GEOMETRY
 
                         % ventilation
                         if language
-                            sheet = 'Lüftung';
+                            sheet = 'LÃ¼ftung';
                         else
                             sheet = 'Ventilation';
                         end
@@ -1483,7 +1486,7 @@ classdef GEOMETRY
                         
                    case '10.2'
                         if language
-                            sheet = 'Flächen';
+                            sheet = 'FlÃ¤chen';
                         else
                             sheet = 'Areas';
                         end
@@ -1492,11 +1495,11 @@ classdef GEOMETRY
                         range = 'K40:AJ1000'; %EV, before: 'K40:AL240';
                         [~, ~, data] = xlsread1(filename, sheet, range);
                         if language
-                            sheet = 'Flächen';
-                            idx_fl=find(strcmp(data(:,1),{'Wärmebrückeneingabe'}))-3;
+                            sheet = 'FlÃ¤chen';
+                            idx_fl=find(strcmp(data(:,1),{'WÃ¤rmebrÃ¼ckeneingabe'}))-3;
                         else
                             sheet = 'Areas';
-                            idx_fl=find(strcmp(data(:,1),{'Thermal bridge inputs'}))-3;
+                            idx_fl=find(strcmp(data(:,1),{'Thermal bridge input'}))-3;
                         end
                         %reshape the data matrix to avoid to include the
                         %thermal bridges part
@@ -1551,7 +1554,7 @@ classdef GEOMETRY
 
                         % ventilation
                         if language
-                            sheet = 'Lüftung';
+                            sheet = 'LÃ¼ftung';
                         else
                             sheet = 'Ventilation';
                         end
@@ -1578,7 +1581,7 @@ classdef GEOMETRY
                         index_number_wi = 1; 
                         index_width_wi = 7;
                         index_height_wi = 8;
-                        index_framelinks_wi = 44; %Rahmenmaße aus Blatt 'Komponenten' -> Breite links (not sure what this is in 10.2, breite rahmen öffenbar?)
+                        index_framelinks_wi = 44; %RahmenmaÃŸe aus Blatt 'Komponenten' -> Breite links (not sure what this is in 10.2, breite rahmen Ã¶ffenbar?)
                         index_frameright_wi = 45;
                         index_framebottom_wi = 47; 
                         index_frametop_wi = 46;
@@ -1588,7 +1591,6 @@ classdef GEOMETRY
                         index_psiright_wi = 124;
                         index_constr1_wi = 10; % constr Glass
                         index_constr2_wi = 11; % constr Frame
-                        indicator_windows = ones(size(data1,1),1);
                         
                         %clean the data eliminating the rows where we have
                         %no windows (only at the end of the list not in the
@@ -1598,6 +1600,7 @@ classdef GEOMETRY
                         %reshape the data matrix to avoid to include empty
                         %windows
                         data1=data1(1:idx_win,:);
+                        indicator_windows = ones(size(data1,1),1);
                         
                         for ii = 1:size(data1,1)
                             if data1{ii,index_number_wi}==0 || isempty(data1{ii,index_number_wi}) || sum(isnan(data1{ii,index_number_wi})) 
@@ -1607,11 +1610,13 @@ classdef GEOMETRY
                         end
                         
                         
-                        ispos=find(not(sum(isspace(char(data1{:,2}))')));
-                        nopos=find(sum(isspace(char(data1{:,2}))'));
+                        % ispos=find(not(sum(isspace(char(data1{:,2}))')));
+                        % nopos=find(sum(isspace(char(data1{:,2}))'));
+                        ispos=find(not(isnan([data1{:,2}])'));
+                        nopos=find(isnan([data1{:,2}])');
                         
                         if not(isempty(ispos))
-                           data1(ispos,3)=cellstr([char(data1{ispos,2})  char(ones(length(data1(ispos,2)),1) * ' ') char(data1{ispos,3})]);
+                           data1(ispos,3)=cellstr([num2str([data1{ispos,2}])  char(ones(length(data1(ispos,2)),1) * ' ') char(data1{ispos,3})]);
                         end
                         if not(isempty(nopos))
                            data1(nopos,3)=cellstr([char(ones(length(data1(nopos,2)),1) * ' ') char(data1{nopos,3})]);
