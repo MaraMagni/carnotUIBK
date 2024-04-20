@@ -398,8 +398,11 @@ classdef THERMALZONE
                    n50(tt) =   geometry.get_room(obj.zone(ind).rooms(tt)).n50;
 
                 end
-				obj.zone(ind).n50 = (volume(tt)*n50(tt))/sum(volume(tt));
-
+                if exist('volume')
+					obj.zone(ind).n50 = (volume(tt)*n50(tt))/sum(volume(tt));
+                else
+					obj.zone(ind).n50 = 0;
+                end
                 
                 mm_gains = 1;
                 % assign the gains to the zone
