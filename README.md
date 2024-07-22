@@ -46,8 +46,8 @@ Technikerstraße 13, AT-6020 Innsbruck
 Elisa Venturi, Dott. mag.
 E-Mail  elisa.venturi@uibk.ac.at
 
-Mara Magni, Dott. mag.
+Mara Magni, PhD
 E-Mail  mara.magni@uibk.ac.at
 
-Ass. Prof. Dr.-Ing. Fabian Ochs
+Assoc. Prof. Dr.-Ing. Fabian Ochs
 E-Mail  fabian.ochs@uibk.ac.at
